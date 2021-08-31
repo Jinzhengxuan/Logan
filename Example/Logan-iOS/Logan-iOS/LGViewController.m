@@ -73,7 +73,7 @@ typedef enum : NSUInteger {
 
 - (IBAction)uploadFile:(id)sender {
 	// please repalce with your host
-	loganUpload(@"https://openlogan.inf.test.sankuai.com/logan/upload.json", loganTodaysDate(), @"testAppId", @"testUnionId",@"testDeviceId", ^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+	loganUpload(@"https://openlogan.inf.test.sankuai.com/logan/upload.json", loganTodaysDate(), @"testAppId", @"testUnionId",@"testDeviceId", @"15210464696", ^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
 		if(error){
 			NSLog(@"%@",error);
 		}else{

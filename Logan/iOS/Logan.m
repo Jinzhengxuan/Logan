@@ -58,7 +58,7 @@ uint32_t __max_reversed_date;
 + (NSString *)currentDate;
 - (void)flush;
 - (void)filePathForDate:(NSString *)date block:(LoganFilePathBlock)filePathBlock;
-+ (void)uploadFileToServer:(NSString *)urlStr date:(NSString *)date appId:(NSString *)appId unionId:(NSString *)unionId deviceId:(NSString *)deviceId resultBlock:(LoganUploadResultBlock)resultBlock;
++ (void)uploadFileToServer:(NSString *)urlStr date:(NSString *)date appId:(NSString *)appId unionId:(NSString *)unionId deviceId:(NSString *)deviceId phoneNum:(NSString *)phoneNum resultBlock:(LoganUploadResultBlock)resultBlock;
 @end
 
 void loganInit(NSData *_Nonnull aes_key16, NSData *_Nonnull aes_iv16, uint64_t max_file) {
@@ -101,8 +101,8 @@ void loganUploadFilePath(NSString *_Nonnull date, LoganFilePathBlock _Nonnull fi
     [[Logan logan] filePathForDate:date block:filePathBlock];
 }
 
-void loganUpload(NSString * _Nonnull url, NSString * _Nonnull date,NSString * _Nullable appId, NSString *_Nullable unionId,NSString *_Nullable deviceId, LoganUploadResultBlock _Nullable resultBlock){
-	[Logan uploadFileToServer:url date:date appId:appId unionId:unionId deviceId:deviceId resultBlock:resultBlock];
+void loganUpload(NSString * _Nonnull url, NSString * _Nonnull date,NSString * _Nullable appId, NSString *_Nullable unionId,NSString *_Nullable deviceId,NSString * phoneNum, LoganUploadResultBlock _Nullable resultBlock){
+  [Logan uploadFileToServer:url date:date appId:appId unionId:unionId deviceId:deviceId phoneNum:phoneNum resultBlock:resultBlock];
 }
 
 void loganFlush(void) {
@@ -392,7 +392,7 @@ NSString *_Nonnull loganTodaysDate(void) {
 
 #pragma mark - file
 
-+ (void)uploadFileToServer:(NSString *)urlStr date:(NSString *)date appId:(NSString *)appId unionId:(NSString *)unionId deviceId:(NSString *)deviceId resultBlock:(LoganUploadResultBlock)resultBlock {
++ (void)uploadFileToServer:(NSString *)urlStr date:(NSString *)date appId:(NSString *)appId unionId:(NSString *)unionId deviceId:(NSString *)deviceId phoneNum:(NSString *)phoneNum resultBlock:(LoganUploadResultBlock)resultBlock {
 	loganUploadFilePath(date, ^(NSString *_Nullable filePatch) {
 		if (filePatch == nil) {
 			if(resultBlock){
@@ -424,6 +424,8 @@ NSString *_Nonnull loganTodaysDate(void) {
 		[req addValue:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"] forHTTPHeaderField:@"appVersion"];
 		[req addValue:@"2" forHTTPHeaderField:@"platform"];
 		[req addValue:date forHTTPHeaderField:@"fileDate"];
+    
+    [req addValue:phoneNum forHTTPHeaderField:@"phoneNum"];
 		
 		NSURL *fileUrl = [NSURL fileURLWithPath:filePatch];
 		NSURLSessionUploadTask *task = [[NSURLSession sharedSession] uploadTaskWithRequest:req fromFile:fileUrl completionHandler:^(NSData *_Nullable data, NSURLResponse *_Nullable response, NSError *_Nullable error) {
