@@ -58,7 +58,7 @@ uint32_t __max_reversed_date;
 + (NSString *)currentDate;
 - (void)flush;
 - (void)filePathForDate:(NSString *)date block:(LoganFilePathBlock)filePathBlock;
-+ (void)uploadFileToServer:(NSString *)urlStr date:(NSString *)date appId:(NSString *)appId unionId:(NSString *)unionId deviceId:(NSString *)deviceId phoneNum:(NSString *)phoneNum resultBlock:(LoganUploadResultBlock)resultBlock;
++ (void)uploadFileToServer:(NSString *)urlStr date:(NSString *)date appId:(NSString *)appId userId:(NSString *)userId deviceId:(NSString *)deviceId phoneNum:(NSString *)phoneNum resultBlock:(LoganUploadResultBlock)resultBlock;
 @end
 
 void loganInit(NSData *_Nonnull aes_key16, NSData *_Nonnull aes_iv16, uint64_t max_file) {
@@ -101,8 +101,8 @@ void loganUploadFilePath(NSString *_Nonnull date, LoganFilePathBlock _Nonnull fi
     [[Logan logan] filePathForDate:date block:filePathBlock];
 }
 
-void loganUpload(NSString * _Nonnull url, NSString * _Nonnull date,NSString * _Nullable appId, NSString *_Nullable unionId,NSString *_Nullable deviceId,NSString * phoneNum, LoganUploadResultBlock _Nullable resultBlock){
-  [Logan uploadFileToServer:url date:date appId:appId unionId:unionId deviceId:deviceId phoneNum:phoneNum resultBlock:resultBlock];
+void loganUpload(NSString * _Nonnull url, NSString * _Nonnull date,NSString * _Nullable appId, NSString *_Nullable userId,NSString *_Nullable deviceId,NSString * phoneNum, LoganUploadResultBlock _Nullable resultBlock){
+  [Logan uploadFileToServer:url date:date appId:appId userId:userId deviceId:deviceId phoneNum:phoneNum resultBlock:resultBlock];
 }
 
 void loganFlush(void) {
@@ -392,7 +392,7 @@ NSString *_Nonnull loganTodaysDate(void) {
 
 #pragma mark - file
 
-+ (void)uploadFileToServer:(NSString *)urlStr date:(NSString *)date appId:(NSString *)appId unionId:(NSString *)unionId deviceId:(NSString *)deviceId phoneNum:(NSString *)phoneNum resultBlock:(LoganUploadResultBlock)resultBlock {
++ (void)uploadFileToServer:(NSString *)urlStr date:(NSString *)date appId:(NSString *)appId userId:(NSString *)userId deviceId:(NSString *)deviceId phoneNum:(NSString *)phoneNum resultBlock:(LoganUploadResultBlock)resultBlock {
 	loganUploadFilePath(date, ^(NSString *_Nullable filePatch) {
 		if (filePatch == nil) {
 			if(resultBlock){
@@ -410,8 +410,8 @@ NSString *_Nonnull loganTodaysDate(void) {
 		if(appId.length >0){
 			[req addValue:appId forHTTPHeaderField:@"appId"];
 		}
-		if(unionId.length >0){
-			[req addValue:unionId forHTTPHeaderField:@"unionId"];
+		if(userId.length >0){
+			[req addValue:userId forHTTPHeaderField:@"userId"];
 		}
 		NSString *bundleVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
 		if (bundleVersion.length > 0) {
